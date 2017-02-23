@@ -13,6 +13,8 @@ describe("nsStateful",function () {
             $rootScope = $injector.get('$rootScope');
             $scope = $rootScope.$new();
             $compile = $injector.get('$compile');
+            //angular.element is the similar way to jQuery, if jQuery is not available, angualr has its built-in jqLite
+            //the $scope after this is used to combine this function to current scope
             el = $compile(angular.element(simpleHtml))($scope);
         });
 
@@ -20,15 +22,20 @@ describe("nsStateful",function () {
         $rootScope.$digest();
     });
 
+    //angualrjs doesn't recommend the way of manipulating DOM directly1
     it("Should be able to toggle the class based on clicks",function () {
         expect(el.hasClass('red')).toBeFalsy();
-        el.click();
+        //use triggerHandler instead of calling the method directly
+        el.triggerHandler('click');
+        // el.click();
         $scope.$digest();
         expect(el.hasClass('red')).toBeTruthy();
-        el.click();
+        // el.click();
+        el.triggerHandler('click');
         $scope.$digest();
         expect(el.hasClass('red')).toBeFalsy();
-        el.click();
+        // el.click();
+        el.triggerHandler('click');
         $scope.$digest();
         expect(el.hasClass('red')).toBeTruthy();
 
