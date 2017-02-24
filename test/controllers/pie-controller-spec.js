@@ -1,26 +1,47 @@
 describe("PieController",function () {
+
     var $rootScope,
         $scope,
+        dessertManager,
         controller;
 
     //beforeEach is used to get the $rootScope and $scope value from specific module
     beforeEach(function () {
 
-        module('pie');
+        // module.apply(this,Dessert.Dependencies);
+        module('pie','desserts');
 
         inject(function ($injector) {
             $rootScope = $injector.get('$rootScope');
             $scope = $rootScope.$new();
+            dessertManager = $injector.get('DessertManager');
             controller = $injector.get('$controller')("PieController",{$scope:$scope});
         });
+
+        $scope.$digest();
+
     });
     
+    describe("Listeners",function () {
+        describe("pieHasBeenDeleted",function () {
+
+            it("Should set the warning to Red Alert",function () {
+                $rootScope.$broadcast("pieHasBeenDeleted");
+                $scope.$digest();
+                expect($scope.warning).toEqual("Red Alert");
+            })
+
+            it("Should set the slices to zero",function () {
+                $rootScope.$broadcast("pieHasBeenDeleted");
+                $scope.$digest();
+                expect($scope.slices).toEqual(0);
+            })
+        });
+    });
+
     //test for watcher
     describe("Watchers",function () {
-        beforeEach(function () {
-            $scope.$digest();
-        });
-        
+
         describe("nutritionalValue",function () {
             it("Should set the warning that Carbs have gone up, when only carbs go up",function () {
                 $scope.nutritionalValue.carbs++;
@@ -45,7 +66,7 @@ describe("PieController",function () {
                 $scope.nutritionalValue.fat++;
                 $scope.nutritionalValue.carbs++;
                 $scope.$digest();
-                expect($scope.warning).toEqual("Calories, Fat ,Carbshave gone up! ");
+                expect($scope.warning).toEqual("Calories, Fat, Carbs have gone up! ");
             });
 
             it("Should set the warning to null if nothing goes up",function () {

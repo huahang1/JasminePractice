@@ -1,6 +1,12 @@
 angular.module('pie',[]).controller('PieController',
-    ['$scope',
-    function ($scope) {
+    ['$scope', 'DessertManager',
+    function ($scope,dessertManager) {
+
+    //Listeners
+        $scope.$on("pieHasBeenDeleted",function () {
+            $scope.warning = "Red Alert";
+            $scope.slices = 0;
+        });
 
     //Watchers
     function compareAndWarn(newVal,oldVal) {
@@ -18,7 +24,8 @@ angular.module('pie',[]).controller('PieController',
     $scope.$watch('nutritionalValue',function (newVal,oldVal) {
         var props = compareAndWarn(newVal,oldVal);
         if (props && props.length){
-            $scope.warning = props.join(", ") + "have gone up! ";
+            //array.join is used to join each element in array with the separator
+            $scope.warning = props.join(", ") + " have gone up! ";
         }else{
             $scope.warning = null;
         }
